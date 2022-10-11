@@ -35,8 +35,9 @@ import (
 	"bufio"
 	"flag"
 	"fmt"
-	"github.com/onthegit/webrisk"
 	"os"
+
+	"github.com/onthegit/webrisk"
 )
 
 var (
@@ -80,11 +81,12 @@ func main() {
 		os.Exit(codeInvalid)
 	}
 	sb, err := webrisk.NewWebriskClient(webrisk.Config{
-		APIKey:    *apiKeyFlag,
-		DBPath:    *databaseFlag,
-		Logger:    os.Stderr,
-		ServerURL: *serverURLFlag,
-		ProxyURL:  *proxyFlag,
+		SkipLookupAPI: true,
+		APIKey:        *apiKeyFlag,
+		DBPath:        *databaseFlag,
+		Logger:        os.Stderr,
+		ServerURL:     *serverURLFlag,
+		ProxyURL:      *proxyFlag,
 	})
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "Unable to initialize Web Risk client: ", err)
