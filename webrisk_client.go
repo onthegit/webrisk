@@ -134,7 +134,7 @@ type URLThreat struct {
 
 // Config sets up the WebriskClient object.
 type Config struct {
-	//SkipLookupAPI if set to true it will skip querying the api (that is billable)
+	//SkipLookupAPI if set to true it will skip querying the remote API
 	SkipLookupAPI bool
 
 	// ServerURL is the URL for the Web Risk API server.
