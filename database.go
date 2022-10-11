@@ -112,11 +112,20 @@ func (db *database) Init(config *Config, logger *log.Logger) bool {
 		db.setError(errors.New("no database loaded"))
 		return false
 	}
-	dbf, err := loadDatabase(db.config.DBPath)
-	if err != nil {
-		db.log.Printf("load failure: %v", err)
-		db.setError(err)
-		return false
+
+	var dbf databaseFormat = databaseFormat{
+		Table: make(threatsForUpdate),
+	}
+
+	var err error
+
+	if db.config.DBPath != "" {
+		dbf, err = loadDatabase(db.config.DBPath)
+		if err != nil {
+			db.log.Printf("load failure: %v", err)
+			db.setError(err)
+			return false
+		}
 	}
 	// Validate that the database threat list stored on disk is not too stale.
 	if db.isStale(dbf.Time) {

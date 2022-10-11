@@ -18,9 +18,11 @@ import (
 	"encoding/base64"
 	"fmt"
 	"io/ioutil"
+	"net"
 	"net/http"
 	"net/url"
 	"strings"
+	"time"
 
 	"github.com/golang/protobuf/jsonpb"
 	"github.com/golang/protobuf/proto"
@@ -64,14 +66,28 @@ func newNetAPI(root string, key string, proxy string) (*netAPI, error) {
 		return nil, err
 	}
 
-	httpClient := &http.Client{}
+	dfTransport := &http.Transport{
+		DialContext: (&net.Dialer{
+			Timeout: 30 * time.Second,
+			// KeepAlive: 30 * time.Second,
+		}).DialContext,
+		MaxIdleConns:        60,
+		MaxIdleConnsPerHost: 60,
+		IdleConnTimeout:     time.Minute * 10,
+		TLSHandshakeTimeout: 11 * time.Second,
+		Proxy:               nil,
+	}
+
+	httpClient := &http.Client{
+		Transport: dfTransport,
+	}
 
 	if proxy != "" {
 		proxyUrl, err := url.Parse(proxy)
 		if err != nil {
 			return nil, err
 		}
-		httpClient = &http.Client{Transport: &http.Transport{Proxy: http.ProxyURL(proxyUrl)}}
+		dfTransport.Proxy = http.ProxyURL(proxyUrl)
 	}
 
 	q := u.Query()

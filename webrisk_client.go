@@ -134,8 +134,9 @@ type URLThreat struct {
 
 // Config sets up the WebriskClient object.
 type Config struct {
-	//InMemory - if set to true the will use in memory db
-	InMemory bool
+	//if true it will skip querying the api (that is billable)
+	SkipLookupAPI bool
+
 	// ServerURL is the URL for the Web Risk API server.
 	// If empty, it defaults to DefaultServerURL.
 	ServerURL string
@@ -447,42 +448,45 @@ func (wr *WebriskClient) LookupURLsContext(ctx context.Context, urls []string) (
 		}
 	}
 
-	for _, req := range reqs {
-		// Actually query the Web Risk API for exact full hash matches.
-		resp, err := wr.api.HashLookup(ctx, req.HashPrefix, req.ThreatTypes)
-		if err != nil {
-			wr.log.Printf("HashLookup failure: %v", err)
-			atomic.AddInt64(&wr.stats.QueriesFail, 1)
-			return threats, err
-		}
-
-		// Update the cache.
-		wr.c.Update(req, resp)
-
-		// Pull the information the client cares about out of the response.
-		for _, threat := range resp.GetThreats() {
-			fullHash := hashPrefix(threat.Hash)
-			if !fullHash.IsFull() {
-				continue
+	if !wr.config.SkipLookupAPI {
+		for _, req := range reqs {
+			// Actually query the Web Risk API for exact full hash matches.
+			resp, err := wr.api.HashLookup(ctx, req.HashPrefix, req.ThreatTypes)
+			if err != nil {
+				wr.log.Printf("HashLookup failure: %v", err)
+				atomic.AddInt64(&wr.stats.QueriesFail, 1)
+				return threats, err
 			}
-			pattern, ok := hashes[fullHash]
-			idxs, findidx := hash2idxs[fullHash]
-			if findidx && ok {
-				for _, td := range threat.ThreatTypes {
-					if !wr.lists[ThreatType(td)] {
-						continue
-					}
-					for _, idx := range idxs {
-						threats[idx] = append(threats[idx], URLThreat{
-							Pattern:    pattern,
-							ThreatType: ThreatType(td),
-						})
+
+			// Update the cache.
+			wr.c.Update(req, resp)
+
+			// Pull the information the client cares about out of the response.
+			for _, threat := range resp.GetThreats() {
+				fullHash := hashPrefix(threat.Hash)
+				if !fullHash.IsFull() {
+					continue
+				}
+				pattern, ok := hashes[fullHash]
+				idxs, findidx := hash2idxs[fullHash]
+				if findidx && ok {
+					for _, td := range threat.ThreatTypes {
+						if !wr.lists[ThreatType(td)] {
+							continue
+						}
+						for _, idx := range idxs {
+							threats[idx] = append(threats[idx], URLThreat{
+								Pattern:    pattern,
+								ThreatType: ThreatType(td),
+							})
+						}
 					}
 				}
 			}
+			atomic.AddInt64(&wr.stats.QueriesByAPI, 1)
 		}
-		atomic.AddInt64(&wr.stats.QueriesByAPI, 1)
 	}
+
 	return threats, nil
 }
 
