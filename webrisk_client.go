@@ -76,7 +76,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	pb "github.com/google/webrisk/internal/webrisk_proto"
+	pb "github.com/onthegit/webrisk/internal/webrisk_proto"
 )
 
 const (
@@ -134,6 +134,8 @@ type URLThreat struct {
 
 // Config sets up the WebriskClient object.
 type Config struct {
+	//InMemory - if set to true the will use in memory db
+	InMemory bool
 	// ServerURL is the URL for the Web Risk API server.
 	// If empty, it defaults to DefaultServerURL.
 	ServerURL string

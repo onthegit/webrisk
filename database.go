@@ -4,7 +4,7 @@
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     https://www.apache.org/licenses/LICENSE-2.0
+//	https://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -25,8 +25,8 @@ import (
 	"sync"
 	"time"
 
-	pb "github.com/google/webrisk/internal/webrisk_proto"
 	pt "github.com/golang/protobuf/ptypes"
+	pb "github.com/onthegit/webrisk/internal/webrisk_proto"
 )
 
 // jitter is the maximum amount of time that we expect an API list update to
@@ -44,17 +44,17 @@ const (
 // order to provide protection for the latest threats.
 //
 // The process for updating the database is as follows:
-//	* At startup, if a database file is provided, then load it. If loaded
-//	properly (not corrupted and not stale), then set tfu as the contents.
-//	Otherwise, pull a new threat list from the Web Risk API.
-//	* Periodically, synchronize the database with the Web Risk API.
-//	This uses the Version Token fields to update only parts of the threat list that have
-//	changed since the last sync.
-//	* Anytime tfu is updated, generate a new tfl.
+//   - At startup, if a database file is provided, then load it. If loaded
+//     properly (not corrupted and not stale), then set tfu as the contents.
+//     Otherwise, pull a new threat list from the Web Risk API.
+//   - Periodically, synchronize the database with the Web Risk API.
+//     This uses the Version Token fields to update only parts of the threat list that have
+//     changed since the last sync.
+//   - Anytime tfu is updated, generate a new tfl.
 //
 // The process for querying the database is as follows:
-//	* Check if the requested full hash matches any partial hash in tfl.
-//	If a match is found, return a set of ThreatTypes with a partial match.
+//   - Check if the requested full hash matches any partial hash in tfl.
+//     If a match is found, return a set of ThreatTypes with a partial match.
 type database struct {
 	ml sync.RWMutex // Protects tfl, err, and last
 	// threatsForLookup maps ThreatTypes to sets of partial hashes.

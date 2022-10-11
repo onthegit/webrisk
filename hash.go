@@ -4,7 +4,7 @@
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     https://www.apache.org/licenses/LICENSE-2.0
+//	https://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,7 +21,7 @@ import (
 	"sort"
 	"strings"
 
-	pb "github.com/google/webrisk/internal/webrisk_proto"
+	pb "github.com/onthegit/webrisk/internal/webrisk_proto"
 )
 
 const (
@@ -65,10 +65,10 @@ func (p hashPrefixes) Sort()              { sort.Sort(p) }
 
 // Validate checks that the list of hash prefixes is valid. It checks the
 // following parameters:
-//	* That each hash prefix is valid; that is, it has a length within
-//	minHashPrefixLength and maxHashPrefixLength.
-//	* That the list of prefixes is sorted.
-//	* That none of the hashes are prefixes of each other.
+//   - That each hash prefix is valid; that is, it has a length within
+//     minHashPrefixLength and maxHashPrefixLength.
+//   - That the list of prefixes is sorted.
+//   - That none of the hashes are prefixes of each other.
 func (p hashPrefixes) Validate() error {
 	var hp hashPrefix // Previous hash
 	for _, h := range p {
@@ -258,6 +258,7 @@ func decodeRiceIntegers(rice *pb.RiceDeltaEncoding) ([]uint32, error) {
 // least-significant bits coming first in the bit stream.
 //
 // For more information, see the following:
+//
 //	https://en.wikipedia.org/wiki/Golomb_coding
 type riceDecoder struct {
 	br *bitReader

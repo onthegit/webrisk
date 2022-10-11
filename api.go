@@ -4,7 +4,7 @@
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     https://www.apache.org/licenses/LICENSE-2.0
+//	https://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -22,19 +22,19 @@ import (
 	"net/url"
 	"strings"
 
-	pb "github.com/google/webrisk/internal/webrisk_proto"
-	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/jsonpb"
+	"github.com/golang/protobuf/proto"
+	pb "github.com/onthegit/webrisk/internal/webrisk_proto"
 )
 
 const (
-	findHashPath    = "v1/hashes:search"
-	fetchUpdatePath = "v1/threatLists:computeDiff"
-	threatTypeString = "threat_type"
-	versionTokenString = "version_token"
+	findHashPath                = "v1/hashes:search"
+	fetchUpdatePath             = "v1/threatLists:computeDiff"
+	threatTypeString            = "threat_type"
+	versionTokenString          = "version_token"
 	supportedCompressionsString = "constraints.supported_compressions"
-	hashPrefixString = "hash_prefix"
-	threatTypesString = "threat_types"
+	hashPrefixString            = "hash_prefix"
+	threatTypesString           = "threat_types"
 )
 
 // The api interface specifies wrappers around the Web Risk API.

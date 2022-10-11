@@ -19,9 +19,11 @@
 // If an error occurred, debug information may be printed to STDERR.
 //
 // To build the tool:
-//	$ go get github.com/google/webrisk/cmd/wrlookup
+//
+//	$ go get github.com/onthegit/webrisk/cmd/wrlookup
 //
 // Example usage:
+//
 //	$ wrlookup -apikey $APIKEY
 //	https://google.com
 //	Safe URL: https://google.com
@@ -33,7 +35,7 @@ import (
 	"bufio"
 	"flag"
 	"fmt"
-	"github.com/google/webrisk"
+	"github.com/onthegit/webrisk"
 	"os"
 )
 
